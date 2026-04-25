@@ -1,6 +1,11 @@
 import nodeMailer from "nodemailer";
 
 export const sendEmail = async (options) => {
+  // console.log("OPTIONS:", options);
+
+=======
+export const sendEmail = async (options) => {
+>>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
   const transporter = nodeMailer.createTransport({
     host: process.env.SMPT_HOST,
     port: process.env.SMPT_PORT,
