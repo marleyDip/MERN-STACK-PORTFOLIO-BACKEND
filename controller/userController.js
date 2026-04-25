@@ -6,68 +6,42 @@ import { generateToken } from "../utils/jwtToken.js";
 import crypto from "crypto";
 import { sendEmail } from "../utils/sendEmail.js";
 
-<<<<<<< HEAD
 // ========
 // Register
 // ========
-=======
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
 export const register = catchAsyncErrors(async (req, res, next) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return next(new ErrorHandler("Avatar And Resume Required!", 400));
   }
 
   //POSTING AVATAR
-<<<<<<< HEAD
   const { avatar } = req.files;
   const cloudinaryResponseForAvatar = await cloudinary.uploader.upload(
     avatar.tempFilePath,
     { folder: "AVATARS" },
-=======
-
-  const { avatar } = req.files;
-  const cloudinaryResponseForAvatar = await cloudinary.uploader.upload(
-    avatar.tempFilePath,
-    { folder: "AVATARS" }
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
   );
 
   if (!cloudinaryResponseForAvatar || cloudinaryResponseForAvatar.error) {
     console.error(
       "Cloudinary Error:",
-<<<<<<< HEAD
       cloudinaryResponseForAvatar.error || "Unknown Cloudinary error",
-=======
-      cloudinaryResponseForAvatar.error || "Unknown Cloudinary error"
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
     );
   }
 
   //POSTING RESUME
-<<<<<<< HEAD
   const { resume } = req.files;
   const cloudinaryResponseForResume = await cloudinary.uploader.upload(
     resume.tempFilePath,
     { folder: "MY_RESUME" },
-=======
-
-  const { resume } = req.files;
-  const cloudinaryResponseForResume = await cloudinary.uploader.upload(
-    resume.tempFilePath,
-    { folder: "MY_RESUME" }
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
   );
 
   if (!cloudinaryResponseForResume || cloudinaryResponseForResume.error) {
     console.error(
       "Cloudinary Error:",
-<<<<<<< HEAD
       cloudinaryResponseForResume.error || "Unknown Cloudinary error",
-=======
-      cloudinaryResponseForResume.error || "Unknown Cloudinary error"
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
     );
   }
+
   const {
     fullName,
     email,
@@ -108,7 +82,6 @@ export const register = catchAsyncErrors(async (req, res, next) => {
   generateToken(user, "USER Registered Successfully!", 201, res);
 });
 
-<<<<<<< HEAD
 /* export const register = catchAsyncErrors(async (req, res, next) => {
   if (!req.files || !req.files.avatar || !req.files.resume) {
     return next(new ErrorHandler("Avatar and Resume are required!", 400));
@@ -189,48 +162,35 @@ export const register = catchAsyncErrors(async (req, res, next) => {
 // ======
 // Log In
 // ======
-=======
-//Log In
-
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
 export const login = catchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
     return next(new ErrorHandler("Provide Email And Password!"));
   }
-  const user = await User.findOne({ email }).select("+password");
 
+  const user = await User.findOne({ email }).select("+password");
   if (!user) {
     return next(new ErrorHandler("Invalid Email Or Password!"));
   }
-  const isPasswordMatched = await user.comparePassword(password);
 
+  const isPasswordMatched = await user.comparePassword(password);
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid Email Or Password!"));
   }
+
   generateToken(user, "Logged In!", 200, res);
 });
 
-<<<<<<< HEAD
 // =======
 // Log Out
 // =======
-=======
-//Log Out
-
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
 export const logout = catchAsyncErrors(async (req, res, next) => {
   res
     .status(200)
     .cookie("token", "", {
       expires: new Date(Date.now()),
       httpOnly: true,
-<<<<<<< HEAD
-=======
-      sameSite: "None",
-      secure: "true",
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
     })
     .json({
       success: true,
@@ -238,30 +198,21 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
-<<<<<<< HEAD
 // =======
 // GetUser
 // =======
-=======
-//GetUser
-
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
 export const getUser = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req.user.id);
+
   res.status(200).json({
     success: true,
     user,
   });
 });
 
-<<<<<<< HEAD
 // ===============
 // Updated Profile
 // ===============
-=======
-//Updated Profile
-
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
 export const updateProfile = catchAsyncErrors(async (req, res, next) => {
   const newUserData = {
     fullName: req.body.fullName,
@@ -280,16 +231,13 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     const avatar = req.files.avatar;
     const user = await User.findById(req.user.id);
     const profileImageId = user.avatar.public_id;
+
     await cloudinary.uploader.destroy(profileImageId);
     const cloudinaryResponse = await cloudinary.uploader.upload(
       avatar.tempFilePath,
       {
         folder: "AVATARS",
-<<<<<<< HEAD
       },
-=======
-      }
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
     );
 
     newUserData.avatar = {
@@ -302,16 +250,13 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     const resume = req.files.resume;
     const user = await User.findById(req.user.id);
     const resumeId = user.resume.public_id;
+
     await cloudinary.uploader.destroy(resumeId);
     const cloudinaryResponse = await cloudinary.uploader.upload(
       resume.tempFilePath,
       {
         folder: "MY_RESUME",
-<<<<<<< HEAD
       },
-=======
-      }
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
     );
 
     newUserData.resume = {
@@ -333,14 +278,9 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-<<<<<<< HEAD
 // ===============
 // Update Password
 // ===============
-=======
-//Update Password
-
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
 export const updatePassword = catchAsyncErrors(async (req, res, next) => {
   const { currentPassword, newPassword, confirmNewPassword } = req.body;
   if (!currentPassword || !newPassword || !confirmNewPassword) {
@@ -357,61 +297,61 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
     return next(
       new ErrorHandler(
         "New Password And Confirm New Password Do Not Match!",
-<<<<<<< HEAD
         400,
       ),
-=======
-        400
-      )
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
     );
   }
+
   user.password = newPassword;
   await user.save();
+
   res.status(200).json({
     success: true,
     message: "Password Updated!",
   });
 });
 
-<<<<<<< HEAD
 // =====================
 // Get User ForPortfolio
 // =====================
-=======
-//getUserForPortfolio
-
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
 export const getUserForPortfolio = catchAsyncErrors(async (req, res, next) => {
-  const id = "672b765dd0a6d60341a9e991";
-  const user = await User.findById(id);
+  const user = await User.findOne();
+
+  // const user = await User.findById(process.env.PORTFOLIO_USER_ID);
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
   res.status(200).json({
     success: true,
     user,
   });
 });
 
-<<<<<<< HEAD
+/* export const getUserForPortfolio = catchAsyncErrors(async (req, res, next) => {
+  const id = "672b765dd0a6d60341a9e991";
+  const user = await User.findById(id);
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+}); */
+
 // ===============
 // FORGOT PASSWORD
 // ===============
 export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-
-=======
-//FORGOT PASSWORD
-
-export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email });
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
   if (!user) {
     return next(new ErrorHandler("User Not Found!", 404));
   }
+
   const resetToken = user.getResetPasswordToken();
 
   await user.save({ validateBeforeSave: false });
 
-<<<<<<< HEAD
   const baseUrl = process.env.DASHBOARD_URL || "http://localhost:5174";
   // console.log("DASHBOARD_URL =", baseUrl);
 
@@ -460,21 +400,11 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
   `;
 
   // console.log("MESSAGE:", message);
-=======
-  const resetPasswordUrl = `${process.env.DASHBOARD_URL}/password/reset/${resetToken}`;
-
-  const message = `Your Reset Password Token is:- \n\n ${resetPasswordUrl}  \n\n If 
-  You've not requested this email then, please ignore it.`;
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
 
   try {
     await sendEmail({
       email: user.email,
       subject: `Personal Portfolio Dashboard Recovery Password`,
-<<<<<<< HEAD
-      // message,
-=======
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
       message,
     });
     res.status(201).json({
@@ -489,48 +419,35 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
-<<<<<<< HEAD
 // ==============
 // RESET PASSWORD
 // ==============
 export const resetPassword = catchAsyncErrors(async (req, res, next) => {
   const { token } = req.params;
 
-=======
-//RESET PASSWORD
-
-export const resetPassword = catchAsyncErrors(async (req, res, next) => {
-  const { token } = req.params;
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
   const resetPasswordToken = crypto
     .createHash("sha256")
     .update(token)
     .digest("hex");
-<<<<<<< HEAD
 
-=======
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
   const user = await User.findOne({
     resetPasswordToken,
     resetPasswordExpire: { $gt: Date.now() },
   });
+
   if (!user) {
     return next(
       new ErrorHandler(
         "Reset password token is invalid or has been expired.",
-<<<<<<< HEAD
         400,
       ),
-=======
-        400
-      )
->>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
     );
   }
 
   if (req.body.password !== req.body.confirmPassword) {
     return next(new ErrorHandler("Password & Confirm Password do not match"));
   }
+
   user.password = await req.body.password;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpire = undefined;

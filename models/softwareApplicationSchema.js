@@ -8,7 +8,6 @@ const softwareApplicationSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-
     url: {
       type: String,
       required: true,
@@ -18,5 +17,5 @@ const softwareApplicationSchema = new mongoose.Schema({
 
 export const SoftwareApplication = mongoose.model(
   "SoftwareApplication",
-  softwareApplicationSchema
+  softwareApplicationSchema,
 );

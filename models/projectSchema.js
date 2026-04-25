@@ -8,6 +8,7 @@ const projectSchema = new mongoose.Schema({
   technologies: String,
   stack: String,
   deployed: String,
+
   projectBanner: {
     public_id: {
       type: String,
