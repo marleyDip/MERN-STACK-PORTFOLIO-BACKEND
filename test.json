@@ -1,0 +1,27 @@
+{
+"success": true,
+"user": {
+"avatar": {
+"public_id": "AVATARS/pbhq4lmmgigzh3kg7tpq",
+"url": "https://res.cloudinary.com/df4biggtk/image/upload/v1731590132/AVATARS/pbhq4lmmgigzh3kg7tpq.jpg"
+},
+"resume": {
+"public_id": "MY_RESUME/wqtteyabgdisjjbmg926",
+"url": "https://res.cloudinary.com/df4biggtk/image/upload/v1758378415/MY_RESUME/wqtteyabgdisjjbmg926.png"
+},
+"_id": "672b765dd0a6d60341a9e991",
+"fullName": "Md Sofian Hasan",
+"email": "dip.akand9899@gmail.com",
+"phone": "01689190142",
+"aboutMe": "Backend-focused full-stack developer who builds and ships web applications using the MERN and PERN stacks. Skilled in designing REST APIs, structuring PostgreSQL and MongoDB databases, and writing React interfaces that are fast and clean. I care about how code is organized, not just whether it works.",
+"portfolioURL": "https://marleydip.netlify.app",
+"__v": 0,
+"facebookURL": "https://www.facebook.com/MarleyDip1",
+"githubURL": "https://github.com/marleyDip",
+"instagramURL": "https://www.instagram.com/marley_dwip",
+"linkedInURL": "https://www.linkedin.com/in/marleydip",
+"twitterURL": "https://x.com/AkandDip94145",
+"resetPasswordExpire": "2026-04-22T02:35:40.688Z",
+"resetPasswordToken": "1c8bc2194e5b6e4e94c71d6ca9d43248952c6cf44db3a87014b3df9de06b4aca"
+}
+}
