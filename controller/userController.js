@@ -315,9 +315,9 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
 // Get User ForPortfolio
 // =====================
 export const getUserForPortfolio = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findOne();
+  // const user = await User.findOne();
 
-  // const user = await User.findById(process.env.PORTFOLIO_USER_ID);
+  const user = await User.findById(process.env.PORTFOLIO_USER_ID);
 
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
