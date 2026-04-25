@@ -1,10 +1,8 @@
 import nodeMailer from "nodemailer";
-<<<<<<< HEAD
 
 export const sendEmail = async (options) => {
   // console.log("OPTIONS:", options);
 
-=======
 export const sendEmail = async (options) => {
 >>>>>>> 01408f9db6e9f9b896d80cf40404a295b58e63f8
   const transporter = nodeMailer.createTransport({
