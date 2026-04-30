@@ -22,10 +22,10 @@ export const addNewProject = catchAsyncErrors(async (req, res, next) => {
     technologies,
     deployed,
   } = req.body;
+
   if (
     !title ||
     !description ||
-    !gitRepoLink ||
     !projectLink ||
     !stack ||
     !technologies ||
