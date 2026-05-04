@@ -10,6 +10,45 @@ import { sendEmail } from "../utils/sendEmail.js";
 // Register
 // ========
 export const register = catchAsyncErrors(async (req, res, next) => {
+  const {
+    fullName,
+    email,
+    phone,
+    aboutMe,
+    password,
+    portfolioURL,
+    githubURL,
+    instagramURL,
+    twitterURL,
+    linkedInURL,
+    facebookURL,
+  } = req.body;
+
+  // ================
+  // INPUT VALIDATION
+  // ================
+
+  // Full Name
+  if (!fullName || fullName.trim().length < 3) {
+    return next(
+      new ErrorHandler("Full name must be at least 3 characters long!", 400),
+    );
+  }
+
+  // Email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    return next(new ErrorHandler("Please provide a valid email!", 400));
+  }
+
+  // Password
+  if (!password || password.length < 6) {
+    return next(
+      new ErrorHandler("Password must be at least 6 characters long!", 400),
+    );
+  }
+
+  // Image
   if (!req.files || Object.keys(req.files).length === 0) {
     return next(new ErrorHandler("Avatar And Resume Required!", 400));
   }
@@ -42,19 +81,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  const {
-    fullName,
-    email,
-    phone,
-    aboutMe,
-    password,
-    portfolioURL,
-    githubURL,
-    instagramURL,
-    twitterURL,
-    linkedInURL,
-    facebookURL,
-  } = req.body;
+  // Create User
   const user = await User.create({
     fullName,
     email,
@@ -74,8 +101,8 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     },
 
     resume: {
-      public_id: cloudinaryResponseForResume.public_id, // Set your cloudinary public_id here
-      url: cloudinaryResponseForResume.secure_url, // Set your cloudinary secure_url here
+      public_id: cloudinaryResponseForResume.public_id,
+      url: cloudinaryResponseForResume.secure_url,
     },
   });
 
@@ -216,6 +243,8 @@ export const getUser = catchAsyncErrors(async (req, res, next) => {
 // Updated Profile
 // ===============
 export const updateProfile = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
   const newUserData = {
     fullName: req.body.fullName,
     email: req.body.email,
@@ -229,6 +258,70 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     facebookURL: req.body.facebookURL,
   };
 
+  // ===== Avatar =====
+  if (req.files?.avatar) {
+    if (user.avatar?.public_id) {
+      await cloudinary.uploader.destroy(user.avatar.public_id);
+    }
+
+    const cloudinaryResponse = await cloudinary.uploader.upload(
+      req.files.avatar.tempFilePath,
+      { folder: "AVATARS" },
+    );
+
+    newUserData.avatar = {
+      public_id: cloudinaryResponse.public_id,
+      url: cloudinaryResponse.secure_url,
+    };
+  }
+
+  // ===== Resume =====
+  if (req.files?.resume) {
+    if (user.resume?.public_id) {
+      await cloudinary.uploader.destroy(user.resume.public_id);
+    }
+
+    const cloudinaryResponse = await cloudinary.uploader.upload(
+      req.files.resume.tempFilePath,
+      { folder: "MY_RESUME" },
+    );
+
+    newUserData.resume = {
+      public_id: cloudinaryResponse.public_id,
+      url: cloudinaryResponse.secure_url,
+    };
+  }
+
+  // ===== Update User =====
+  const updatedUser = await User.findByIdAndUpdate(req.user.id, newUserData, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Profile Updated!",
+    user: updatedUser,
+  });
+});
+
+/* export const updateProfile = catchAsyncErrors(async (req, res, next) => {
+  const newUserData = {
+    fullName: req.body.fullName,
+    email: req.body.email,
+    phone: req.body.phone,
+    aboutMe: req.body.aboutMe,
+    githubURL: req.body.githubURL,
+    instagramURL: req.body.instagramURL,
+    portfolioURL: req.body.portfolioURL,
+    twitterURL: req.body.twitterURL,
+    linkedInURL: req.body.linkedInURL,
+    facebookURL: req.body.facebookURL,
+  };
+
+  // ======
+  // Avatar
+  // ======
   if (req.files && req.files.avatar) {
     const avatar = req.files.avatar;
     const user = await User.findById(req.user.id);
@@ -248,6 +341,9 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     };
   }
 
+  // ======
+  // Resume
+  // ======
   if (req.files && req.files.resume) {
     const resume = req.files.resume;
     const user = await User.findById(req.user.id);
@@ -267,6 +363,9 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     };
   }
 
+  // ======
+  // Update
+  // ======
   const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
     new: true,
     runValidators: true,
@@ -278,21 +377,34 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     message: "Profile Updated!",
     user,
   });
-});
+}); */
 
 // ===============
 // Update Password
 // ===============
 export const updatePassword = catchAsyncErrors(async (req, res, next) => {
   const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
   if (!currentPassword || !newPassword || !confirmNewPassword) {
     return next(new ErrorHandler("Please Fill All Fields.", 400));
   }
 
+  if (newPassword.length < 6) {
+    return next(
+      new ErrorHandler("Password must be at least 6 characters long!", 400),
+    );
+  }
+
   const user = await User.findById(req.user.id).select("+password");
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
   const isPasswordMatched = await user.comparePassword(currentPassword);
+
   if (!isPasswordMatched) {
-    return next(new ErrorHandler("Incorrect Current Password!"));
+    return next(new ErrorHandler("Incorrect Current Password!", 400));
   }
 
   if (newPassword !== confirmNewPassword) {
@@ -312,6 +424,39 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
     message: "Password Updated!",
   });
 });
+
+/* export const updatePassword = catchAsyncErrors(async (req, res, next) => {
+  const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+  if (!currentPassword || !newPassword || !confirmNewPassword) {
+    return next(new ErrorHandler("Please Fill All Fields.", 400));
+  }
+
+  const user = await User.findById(req.user.id).select("+password");
+
+  const isPasswordMatched = await user.comparePassword(currentPassword);
+
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Incorrect Current Password!", 400));
+  }
+
+  if (newPassword !== confirmNewPassword) {
+    return next(
+      new ErrorHandler(
+        "New Password And Confirm New Password Do Not Match!",
+        400,
+      ),
+    );
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Password Updated!",
+  });
+}); */
 
 // =====================
 // Get User ForPortfolio
