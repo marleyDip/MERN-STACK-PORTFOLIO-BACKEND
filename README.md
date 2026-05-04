@@ -153,7 +153,7 @@ npm start     # Production server
 ## 👨‍💻 Author
 
 ### **[Md Sofian Hasan](https://marleydip.netlify.app/)**
-## Full Stack Developer (MERN & PERN)
+Full Stack Developer (MERN & PERN)
 
 ---
 
