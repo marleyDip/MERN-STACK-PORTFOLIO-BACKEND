@@ -1,5 +1,6 @@
-import app from "./app.js";
 import { v2 as cloudinary } from "cloudinary";
+import app from "./app.js";
+import dbConnection from "./database/dbConnection.js";
 
 // Cloudinary config
 cloudinary.config({
@@ -10,13 +11,32 @@ cloudinary.config({
 
 const PORT = process.env.PORT || 4000;
 
-const server = app.listen(PORT, () => {
+const startServer = async () => {
+  try {
+    await dbConnection();
+
+    const server = app.listen(PORT, () => {
+      console.log(`Portfolio Server running on port ${PORT}`);
+    });
+
+    server.on("error", (err) => {
+      console.error("Portfolio Server error:", err);
+    });
+  } catch (error) {
+    console.error("Failed to start Portfolio Server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+/* const server = app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}`);
 });
 
 server.on("error", (err) => {
   console.error("Server error:", err);
-});
+}); */
 
 /* import app from "./app.js";
 import cloudinary from "cloudinary";

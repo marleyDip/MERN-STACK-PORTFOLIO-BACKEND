@@ -6,7 +6,8 @@ export const dbConnection = async () => {
       dbName: "MERN_STACK_PERSONAL_PORTFOLIO",
 
       // Improve connection performance
-      maxPoolSize: 10, // number of concurrent DB connections
+      // maxPoolSize: 10, // number of concurrent DB connections
+      maxPoolSize: 5, // number of concurrent DB connections
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
     });

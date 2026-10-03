@@ -1,23 +1,23 @@
-import express from "express";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import fileUpload from "express-fileupload";
 import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import fileUpload from "express-fileupload";
 
-import dbConnection from "./database/dbConnection.js";
+// import dbConnection from "./database/dbConnection.js";
 import { errorMiddleware } from "./middlewares/error.js";
 
 import messageRouter from "./router/messageRoutes.js";
-import userRouter from "./router/userRoutes.js";
-import timelineRouter from "./router/timelineRoutes.js";
-import applicationRouter from "./router/softwareApplicationRoutes.js";
-import skillRouter from "./router/skillRoutes.js";
 import projectRouter from "./router/projectRoutes.js";
-
-const app = express();
+import skillRouter from "./router/skillRoutes.js";
+import applicationRouter from "./router/softwareApplicationRoutes.js";
+import timelineRouter from "./router/timelineRoutes.js";
+import userRouter from "./router/userRoutes.js";
 
 // dotenv.config({ path: "./config/config.env" });
 dotenv.config();
+
+const app = express();
 
 // CORS
 app.use(
@@ -40,6 +40,14 @@ app.use(
   }),
 );
 
+// Health Check Endpoint for UptimeRobot
+app.get("/api/v1/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Portfolio Server API is healthy and awake!",
+  });
+});
+
 // Routes
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/user", userRouter);
@@ -48,8 +56,17 @@ app.use("/api/v1/softwareapplication", applicationRouter);
 app.use("/api/v1/skill", skillRouter);
 app.use("/api/v1/project", projectRouter);
 
+// Health Check Endpoint for Portfolio API
+// app.get("/health", (req, res) => {
+//   res.status(200).json({
+//     success: true,
+//     message: "Portfolio API is healthy",
+//     timestamp: new Date().toISOString(),
+//   });
+// });
+
 // DB connection
-dbConnection();
+// dbConnection();
 
 // Error middleware
 app.use(errorMiddleware);
