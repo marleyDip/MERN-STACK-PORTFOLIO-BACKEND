@@ -1,9 +1,9 @@
 import { v2 as cloudinary } from "cloudinary";
-import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
-import { User } from "../models/userSchema.js";
-import ErrorHandler from "../middlewares/error.js";
-import { generateToken } from "../utils/jwtToken.js";
 import crypto from "crypto";
+import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
+import ErrorHandler from "../middlewares/error.js";
+import { User } from "../models/userSchema.js";
+import { generateToken } from "../utils/jwtToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
 
 // ========
@@ -218,8 +218,8 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
     .cookie("token", "", {
       expires: new Date(Date.now()),
       httpOnly: true,
-      // sameSite: "None",
-      // secure: "true",
+      sameSite: "None",
+      secure: true,
     })
     .json({
       success: true,
