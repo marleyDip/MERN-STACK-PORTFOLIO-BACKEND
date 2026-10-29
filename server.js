@@ -15,6 +15,21 @@ const startServer = async () => {
   try {
     await dbConnection();
 
+    app.listen(PORT, () => {
+      console.log(`Portfolio Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error.message);
+    process.exitCode = 1;
+  }
+};
+
+startServer();
+
+/* const startServer = async () => {
+  try {
+    await dbConnection();
+
     const server = app.listen(PORT, () => {
       console.log(`Portfolio Server running on port ${PORT}`);
     });
@@ -28,7 +43,7 @@ const startServer = async () => {
   }
 };
 
-startServer();
+startServer(); */
 
 /* const server = app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}`);
