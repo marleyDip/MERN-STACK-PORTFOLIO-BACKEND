@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 
 export const dbConnection = async () => {
+  console.log("MongoDB URI configured:", !!process.env.MONGO_URI);
+  console.log("MongoDB connection state:", mongoose.connection.readyState);
+
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI, {
       dbName: "MERN_STACK_PERSONAL_PORTFOLIO",
