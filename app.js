@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import express from "express";
 import fileUpload from "express-fileupload";
 
-// import dbConnection from "./database/dbConnection.js";
+import dbConnection from "./database/dbConnection.js";
 import { errorMiddleware } from "./middlewares/error.js";
 
 import messageRouter from "./router/messageRoutes.js";
@@ -41,11 +41,31 @@ app.use(
 );
 
 // Health Check Endpoint for UptimeRobot
-app.get("/api/v1/health", (req, res) => {
+/* app.get("/api/v1/health", (req, res) => {
   res.status(200).json({
     success: true,
     message: "Portfolio Server API is healthy and awake!",
   });
+}); */
+
+app.get("/api/v1/health", async (req, res) => {
+  try {
+    await dbConnection();
+
+    return res.status(200).json({
+      success: true,
+      message: "API and database are healthy",
+      database:
+        mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    });
+  } catch (error) {
+    console.error("Health check failed:", error.message);
+
+    return res.status(503).json({
+      success: false,
+      message: "Database connection failed",
+    });
+  }
 });
 
 // Routes
