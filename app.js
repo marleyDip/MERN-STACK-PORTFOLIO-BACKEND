@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import express from "express";
 import fileUpload from "express-fileupload";
 
-// import dbConnection from "./database/dbConnection.js";
+import dbConnection from "./database/dbConnection.js";
 import { errorMiddleware } from "./middlewares/error.js";
 
 import messageRouter from "./router/messageRoutes.js";
@@ -86,7 +86,7 @@ app.use("/api/v1/project", projectRouter);
 // });
 
 // DB connection
-// dbConnection();
+dbConnection();
 
 // Error middleware
 app.use(errorMiddleware);
