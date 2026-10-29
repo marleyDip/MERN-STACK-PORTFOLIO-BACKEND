@@ -1,6 +1,40 @@
 import mongoose from "mongoose";
 
 export const dbConnection = async () => {
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
+
+  const uri = process.env.MONGO_URI;
+
+  if (!uri) {
+    throw new Error("MONGO_URI is missing in the environment");
+  }
+
+  try {
+    console.log("Connecting to MongoDB...");
+
+    const conn = await mongoose.connect(uri, {
+      dbName: "MERN_STACK_PERSONAL_PORTFOLIO",
+      maxPoolSize: 5,
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    });
+
+    console.log("MongoDB connected:", conn.connection.host);
+
+    return conn.connection;
+  } catch (err) {
+    console.error("Database connection failed:", err.message);
+    throw err;
+  }
+};
+
+export default dbConnection;
+
+/* import mongoose from "mongoose";
+
+export const dbConnection = async () => {
   console.log("MongoDB URI configured:", !!process.env.MONGO_URI);
   console.log("MongoDB connection state:", mongoose.connection.readyState);
 
@@ -22,7 +56,7 @@ export const dbConnection = async () => {
   }
 };
 
-export default dbConnection;
+export default dbConnection; */
 
 /* import mongoose from "mongoose";
 
