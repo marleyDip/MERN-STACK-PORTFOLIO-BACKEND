@@ -25,7 +25,13 @@ export const dbConnection = async () => {
 
     return conn.connection;
   } catch (err) {
-    console.error("Database connection failed:", err.message);
+    // console.error("Database connection failed:", err.message);
+    // throw err;
+
+    console.error("MongoDB connection error:", err);
+    console.error("Error name:", err.name);
+    console.error("Error message:", err.message);
+
     throw err;
   }
 };
